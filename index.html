@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Personajes D&D 5e</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Generador de Personajes</h1>
+            <p class="subtitle">Dungeons & Dragons 5ª Edición</p>
+        </header>
+        
+        <div class="form-container">
+            <label for="raza">Raza:</label>
+            <select id="raza">
+                <option value="Elfo">Elfo</option>
+                <option value="Humano">Humano</option>
+                <option value="Enano">Enano</option>
+                <option value="Mediano">Mediano</option>
+                <option value="Semielfo">Semielfo</option>
+                <option value="Tiefling">Tiefling</option>
+            </select>
+
+            <label for="clase">Clase:</label>
+            <select id="clase">
+                <option value="Guerrero">Guerrero</option>
+                <option value="Mago">Mago</option>
+                <option value="Pícaro">Pícaro</option>
+                <option value="Clérigo">Clérigo</option>
+                <option value="Bárbaro">Bárbaro</option>
+                <option value="Druida">Druida</option>
+            </select>
+
+            <label for="nivel">Nivel:</label>
+            <input type="number" id="nivel" value="1" min="1" max="20">
+
+            <button onclick="generarFicha()">Generar Personaje</button>
+        </div>
+
+        <div id="resultado" class="resultado">
+            <!-- The character sheet will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        async function generarFicha() {
+            const raza = document.getElementById("raza").value;
+            const clase = document.getElementById("clase").value;
+            const nivel = document.getElementById("nivel").value;
+            const resultadoDiv = document.getElementById("resultado");
+
+            resultadoDiv.innerHTML = "<p>Generando personaje...</p>";
+
+            try {
+                const response = await fetch("http://localhost:3000/generar-personaje", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ raza, clase, nivel }),
+                });
+
+                if (!response.ok) {
+                    throw new Error("Error en la respuesta del servidor");
+                }
+
+                const data = await response.json();
+                
+                let html = `
+                    <div class="character-sheet">
+                        <div class="character-header">
+                            <h2>${data.nombre}</h2>
+                            <p>${data.descripcion.raza} ${data.descripcion.clase} Nivel ${data.descripcion.nivel}</p>
+                        </div>
+                        
+                        <div class="character-section">
+                            <h3>Atributos</h3>
+                            <div class="attributes-grid">`;
+                
+                for (const [attr, value] of Object.entries(data.atributos)) {
+                    html += `
+                        <div class="attribute-box">
+                            <span class="attribute-name">${attr}</span>
+                            <span class="attribute-value">${value}</span>
+                        </div>`;
+                }
+                
+                html += `
+                            </div>
+                        </div>
+                        
+                        <div class="character-section">
+                            <h3>Habilidades</h3>
+                            <ul class="skills-list">`;
+                
+                data.habilidades.forEach(hab => {
+                    html += `<li>${hab}</li>`;
+                });
+                
+                html += `
+                            </ul>
+                        </div>
+                        
+                        <div class="character-section">
+                            <h3>Equipo</h3>
+                            <ul class="equipment-list">`;
+                
+                data.equipo.forEach(item => {
+                    html += `<li>${item}</li>`;
+                });
+                
+                html += `
+                            </ul>
+                        </div>
+                        
+                        <div class="character-section">
+                            <h3>Trasfondo</h3>
+                            <p>${data.trasfondo}</p>
+                        </div>
+                    </div>`;
+                
+                resultadoDiv.innerHTML = html;
+                
+            } catch (error) {
+                resultadoDiv.innerHTML = `<p style="color:red;">Error al generar la ficha. Por favor intente nuevamente.</p>`;
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+PS C:\Users\benve> Invoke-RestMethod -Uri "http://localhost:3000/generar-personaje" -Method Post -Headers @{"Content-Type"="application/json"} -Body '{"raza":"Elfo","clase":"Mago","nivel":3}'
+
+
+nombre      : Eldarion
+raza        : Elfo
+clase       : Mago
+nivel       : 3
+atributos   : @{Fuerza=10; Destreza=16; Constitución=12; Inteligencia=18; Sabiduría=14; Carisma=11}
+habilidades : {Arcana (+4), Historia (+4), Perspicacia (+2), Engaño (+0)}
+equipo      : {Vara de mago, Libro de hechizos, Túnica de seda}
+trasfondo   : Eldarion es un elfo joven y curioso que ha dedicado su vida al estudio de la magia y los secretos
+              arcanos.
+
+
+
+PS C:\Users\benve>
