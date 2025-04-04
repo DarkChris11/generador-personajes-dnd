@@ -20,8 +20,8 @@ Un generador de fichas de personajes para **Dungeons & Dragons 5ª Edición** qu
 
 1. **Clona este repositorio:**
    ```bash
-   git clone https://github.com/tuusuario/generador-dnd.git
-   cd generador-dnd
+   git clone https://github.com/DarkChris11/generador-personajes-dnd.git
+   cd generador-personajes-dnd
    ```
 2. **Instala las dependencias:**
    ```bash
